@@ -3,6 +3,18 @@ A demo show that seems app is to being wake up 200 times in second when glES is 
 
 
 
+Enviroment
+
+------
+
+Xcode Version 12.3 (12C33)
+
+Model: iPad Pro (12.9-inch) (Model A1584) + iOS 14.3 (18C66)
+
+Model: iPhone XR + iOS 14.2 (18B92)
+
+
+
 Crash 
 
 ------
