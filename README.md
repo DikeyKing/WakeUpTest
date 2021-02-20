@@ -29,8 +29,6 @@ When openGLES is added
 
 ------
 
-
-
 ```
 2021-02-20 16:35:44.810829+0800 WakeUpTest[61090:4385780] Metal GPU Frame Capture Enabled
 2021-02-20 16:35:44.814037+0800 WakeUpTest[61090:4385780] Metal API Validation Enabled
@@ -52,8 +50,6 @@ Without openGLES
 
 ------
 
-
-
 ```
 2021-02-20 16:38:16.805027+0800 WakeUpTest[61222:4387549] Metal API Validation Enabled
 2021-02-20 16:38:17.412176+0800 WakeUpTest[61222:4387242] wake _interrupt_wakeup = 23
@@ -68,5 +64,40 @@ Without openGLES
 2021-02-20 16:38:21.412130+0800 WakeUpTest[61222:4387242] wake _timer_wakeup = 0
 2021-02-20 16:38:22.412033+0800 WakeUpTest[61222:4387242] wake _interrupt_wakeup = 30
 2021-02-20 16:38:22.412128+0800 WakeUpTest[61222:4387242] wake _timer_wakeup = 0
+```
+
+
+
+Code to measure _interrupt_wakeup
+
+------
+
+```
+BOOL getSystemWakeup(NSInteger *interrupt_wakeup, NSInteger *timer_wakeup) {
+    struct task_power_info info = {0};
+    mach_msg_type_number_t count = TASK_POWER_INFO_COUNT;
+    kern_return_t ret = task_info(current_task(), TASK_POWER_INFO, (task_info_t)&info, &count);
+    if (ret == KERN_SUCCESS) {
+        if (interrupt_wakeup) {
+            *interrupt_wakeup = info.task_interrupt_wakeups;
+            NSLog(@"wake _interrupt_wakeup = %@", @(_interrupt_wakeup));
+        }
+        if (timer_wakeup) {
+            *timer_wakeup = info.task_timer_wakeups_bin_1 + info.task_timer_wakeups_bin_2;
+            NSLog(@"wake _timer_wakeup = %@", @(_timer_wakeup));
+        }
+        return true;
+    }
+    else {
+        if (interrupt_wakeup) {
+            *interrupt_wakeup = 0;
+        }
+        if (timer_wakeup) {
+            *timer_wakeup = 0;
+        }
+        return false;
+    }
+}
+
 ```
 
